@@ -1,23 +1,28 @@
+import { AxiosResponse } from "axios";
+
+interface Cache {
+    [key: string]: Promise<AxiosResponse>
+}
+
 export interface Subject {
     attach(observer: Observer): void;
 
-    notify(key: string, value: string): void;
+    notify(key: string, value: Promise<AxiosResponse>): void;
 
-    update(key: string, value: string): void;
+    update(key: string, value: Promise<AxiosResponse>): void;
 }
 
-
 export class QueryCache implements Subject {
-    private cache = {};
+    private cache: Cache  = {};
     private observers: Observer[] = [];
   
-    notify(key, value) {
+    notify(key: string, value: Promise<AxiosResponse>) {
       for (const observer of this.observers) {
         observer.update(key, value);
       }
     }
   
-    update(key, value) {
+    update(key: string, value: Promise<AxiosResponse>) {
       this.cache[key] = value;
       this.notify(key, value);
     }
@@ -43,5 +48,5 @@ export class QueryCache implements Subject {
 
 
 export interface Observer {
-    update(subject: Subject): void;
+    update(key: string, value: Promise<AxiosResponse>): void;
 }
