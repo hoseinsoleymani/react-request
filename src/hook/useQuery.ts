@@ -1,8 +1,8 @@
 import type { AxiosRequestConfig } from 'axios';
 import { useContext, useEffect, useState } from 'react';
 
-import { QueryCacheContext } from '../components/QueryClient';
-import { client } from '../lib';
+import { QueryCacheContext } from '@/components';
+import { client } from '@/lib';
 
 interface UseQueryOptions {
   url: string;

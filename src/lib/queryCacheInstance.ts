@@ -1,3 +1,3 @@
-import { QueryCache } from '../utils/QueryCache';
+import { QueryCache } from '@/utils';
 
 export const queryCache = new QueryCache();

@@ -1,7 +1,7 @@
 import type { PropsWithChildren } from 'react';
 import { createContext, useMemo } from 'react';
 
-import type { QueryCache } from '../utils/QueryCache';
+import type { QueryCache } from '@/utils';
 
 export const QueryCacheContext = createContext<{
   queryCache: QueryCache | null;

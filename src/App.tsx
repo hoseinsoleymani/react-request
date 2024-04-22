@@ -1,4 +1,4 @@
-import { useQuery } from './hook/useQuery';
+import { useQuery } from '@/hook';
 
 interface Data {
   completed: boolean;
@@ -30,6 +30,8 @@ const App = () => {
   // }, [])
 
   if (loading || !data) return <span>loading...</span>;
+
+  console.log('the data is:', data, 'the loading state is:', loading);
 
   return <h1>React Request</h1>;
 };
