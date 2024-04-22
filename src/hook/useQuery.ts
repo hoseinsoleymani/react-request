@@ -12,9 +12,11 @@ interface UseQueryOptions {
 
 export function useQuery<TData = unknown>(options: UseQueryOptions) {
   const { queryKey, url, requestOptions } = options;
+
   const [data, setData] = useState<TData | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+
   const { queryCache } = useContext(QueryCacheContext);
 
   useEffect(() => {
