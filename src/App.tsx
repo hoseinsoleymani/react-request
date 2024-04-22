@@ -1,13 +1,25 @@
+import { useEffect } from 'react'
 import './App.css'
 import { useQuery } from './hook/useQuery'
 
 function App() {
-  const { data, error, loading } = useQuery({
+  const { refetch } = useQuery({
+    queryKey: "HOME-KEY",
+    url: "/todos",
+  })
+  useQuery({
+    queryKey: "HOME-KEY",
+    url: "/todos",
+  })
+  useQuery({
     queryKey: "HOME-KEY",
     url: "/todos",
   })
 
-  console.log(data, error, loading)
+  
+  useEffect(() => {
+    refetch()
+  }, [])
 
   return (
     <>

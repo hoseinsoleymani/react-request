@@ -1,80 +1,47 @@
 export interface Subject {
     attach(observer: Observer): void;
 
-    detach(observer: Observer): void;
+    notify(key: string, value: string): void;
 
-    notify(): void;
+    update(key: string, value: string): void;
 }
 
 
-export class Observable implements Subject {
-
-    /**
-     * @type {Observer[]} List of subscribers. In real life, the list of
-     * subscribers can be stored more comprehensively (categorized by event
-     * type, etc.).
-     */
+export class QueryCache implements Subject {
+    private cache = {};
     private observers: Observer[] = [];
-
-
-    public attach(observer: Observer): void {
-        const isExist = this.observers.includes(observer);
-        if (isExist) {
-            return console.log('Subject: Observer has been attached already.');
+  
+    notify(key, value) {
+      for (const observer of this.observers) {
+        observer.update(key, value);
+      }
+    }
+  
+    update(key, value) {
+      this.cache[key] = value;
+      this.notify(key, value);
+    }
+  
+    attach(observer: Observer) {
+      this.observers.push(observer);
+      return () => {
+        const index = this.observers.indexOf(observer);
+        if (index !== -1) {
+          this.observers.splice(index, 1);
         }
-
-        this.observers.push(observer);
+      };
     }
-
-    public detach(observer: Observer): void {
-        const observerIndex = this.observers.indexOf(observer);
-        if (observerIndex === -1) {
-            return console.log('Subject: Nonexistent observer.');
-        }
-
-        this.observers.splice(observerIndex, 1);
+  
+    has(key: string) {
+      return key in this.cache;
     }
-
-    public notify(): void {
-        for (const observer of this.observers) {
-            observer.update(this);
-        }
+  
+    get(key: string) {
+      return this.cache[key];
     }
-
-    public someBusinessLogic(): void {
-        console.log('\nSubject: I\'m doing something important.');
-        this.notify();
-    }
-}
+  }
 
 
 export interface Observer {
     update(subject: Subject): void;
 }
-
-const ConcreteObserverA: Observer = {
-    update: (subject: Subject) => {
-        console.log(subject)       
-    }
-}
-
-const ConcreteObserverB: Observer = {
-    update: (subject: Subject) => {
-        console.log(subject)       
-    }
-}
-
-const subject = new Observable();
-
-// const observer1 = new ConcreteObserverA();
-subject.attach(ConcreteObserverA);
-
-// const observer2 = new ConcreteObserverB();
-subject.attach(ConcreteObserverB);
-
-subject.someBusinessLogic();
-subject.someBusinessLogic();
-
-subject.detach(ConcreteObserverB);
-
-subject.someBusinessLogic();
