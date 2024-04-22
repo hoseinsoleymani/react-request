@@ -1,5 +1,5 @@
 import type { PropsWithChildren } from 'react';
-import { createContext, useMemo } from 'react';
+import { createContext, useContext, useMemo } from 'react';
 
 import type { QueryCache } from '@/utils';
 
@@ -26,4 +26,12 @@ export const QueryClientProvider = ({
       {children}
     </QueryCacheContext.Provider>
   );
+};
+
+export const useQueryCache = () => {
+  const { queryCache } = useContext(QueryCacheContext);
+
+  if (!queryCache) throw Error("The query cache wasn't found");
+
+  return queryCache;
 };

@@ -1,7 +1,7 @@
 import type { AxiosRequestConfig } from 'axios';
-import { useContext, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
-import { QueryCacheContext } from '@/components';
+import { useQueryCache } from '@/components';
 import { client } from '@/lib';
 
 interface UseQueryOptions {
@@ -16,12 +16,29 @@ export function useQuery<TData = unknown>(options: UseQueryOptions) {
   const [data, setData] = useState<TData | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const queryCache = useQueryCache();
 
-  const { queryCache } = useContext(QueryCacheContext);
+  const sendRequest = () => {
+    setLoading(true);
+
+    return client
+      .get<TData>(url, { ...requestOptions })
+      .then((res) => {
+        setLoading(false);
+        setData(res.data);
+
+        return res;
+      })
+      .catch((err) => {
+        setLoading(false);
+        setError(err);
+
+        queryCache.delete(queryKey);
+        return err;
+      });
+  };
 
   useEffect(() => {
-    if (!queryCache) return;
-
     if (queryCache.has(queryKey)) {
       queryCache
         .get(queryKey)
@@ -32,32 +49,12 @@ export function useQuery<TData = unknown>(options: UseQueryOptions) {
           setError(err);
         });
     } else {
-      setLoading(true);
-
-      queryCache.update(
-        queryKey,
-        client
-          .get<TData>(url, { ...requestOptions })
-          .then((res) => {
-            setLoading(false);
-            setData(res.data);
-            return res;
-          })
-          .catch((err) => {
-            setLoading(false);
-            setError(err);
-
-            queryCache.delete(queryKey);
-            return err;
-          }),
-      );
+      queryCache.update(queryKey, sendRequest());
     }
   }, [queryCache, queryKey, requestOptions, url]);
 
   useEffect(() => {
-    if (!queryCache) return;
-
-    return queryCache.attach({
+    queryCache.attach({
       update: (key, value) => {
         if (key === queryKey)
           value
@@ -71,27 +68,9 @@ export function useQuery<TData = unknown>(options: UseQueryOptions) {
     });
   }, []);
 
-  function refetch() {
-    if (!queryCache) return;
-
-    setLoading(true);
-
-    queryCache.update(
-      queryKey,
-      client
-        .get(url, { ...requestOptions })
-        .then((res) => {
-          setLoading(false);
-          setData(res.data);
-        })
-        .catch((err) => {
-          setLoading(false);
-          setError(err);
-
-          return err;
-        }),
-    );
-  }
+  const refetch = useCallback(() => {
+    queryCache.update(queryKey, sendRequest());
+  }, [queryKey, url]);
 
   return {
     data,
