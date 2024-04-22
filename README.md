@@ -71,4 +71,4 @@ In this example, the useQuery hook manages the API request to https://api.exampl
 
 ## Contributing
 
-If you find any issues or have suggestions for improvements, feel free to open an issue or submit a pull request on the [GitHub repository](https://github.com/your-repo-link).
+If you find any issues or have suggestions for improvements, feel free to open an issue or submit a pull request on the [GitHub repository](https://github.com/hoseinsoleymani/react-request).
