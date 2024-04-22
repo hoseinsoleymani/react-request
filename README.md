@@ -32,10 +32,10 @@ The useQuery custom hook provided by React-Request allows you to manage API requ
 
 #### Example Usage:
 
-import React from 'react';
+```import React from 'react';
 import useQuery from 'react-request';
 
-```const MyComponent = () => {
+const MyComponent = () => {
   const { data, isLoading, error, refetch } = useQuery();
 
   useEffect(() => {
