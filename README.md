@@ -57,8 +57,8 @@ import useQuery from 'react-request';
   );
 };
 
-export default MyComponent;```
-
+export default MyComponent;
+```
 
 In this example, the useQuery hook manages the API request to https://api.example.com/data, handles loading state, errors, and caches the response data for future use.
 
