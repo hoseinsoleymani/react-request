@@ -1,15 +1,29 @@
-import React, { createContext } from 'react'
+import type { PropsWithChildren } from 'react';
+import { createContext, useMemo } from 'react';
 
-const Context = createContext({})
+import type { QueryCache } from '../utils/QueryCache';
 
-export const ClientContextProvider = () => {
-    if(!Context) {
-        throw Error("the context not exist!")
-    }
+export const QueryCacheContext = createContext<{
+  queryCache: QueryCache | null;
+}>({
+  queryCache: null,
+});
+
+interface QueryClientProviderProps {
+  queryCache: QueryCache;
+}
+
+export const QueryClientProvider = ({
+  children,
+  queryCache,
+}: PropsWithChildren<QueryClientProviderProps>) => {
+  const queryCacheValue = useMemo(() => {
+    return { queryCache };
+  }, []);
 
   return (
-    <Context.Provider>
-
-    </Context.Provider>
-  )
-}
+    <QueryCacheContext.Provider value={queryCacheValue}>
+      {children}
+    </QueryCacheContext.Provider>
+  );
+};

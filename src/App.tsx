@@ -1,31 +1,37 @@
-import { useEffect } from 'react'
-import './App.css'
-import { useQuery } from './hook/useQuery'
+import { useQuery } from './hook/useQuery';
 
-function App() {
-  const { refetch } = useQuery({
-    queryKey: "HOME-KEY",
-    url: "/todos",
-  })
-  useQuery({
-    queryKey: "HOME-KEY",
-    url: "/todos",
-  })
-  useQuery({
-    queryKey: "HOME-KEY",
-    url: "/todos",
-  })
-
-  
-  useEffect(() => {
-    refetch()
-  }, [])
-
-  return (
-    <>
-      Hello
-    </>
-  )
+interface Data {
+  completed: boolean;
+  id: number;
+  title: string;
+  userId: number;
 }
 
-export default App
+const App = () => {
+  const { data, loading } = useQuery<Data[]>({
+    queryKey: 'HOME-KEY',
+    url: '/todos',
+  });
+
+  // Duplicate query with a same key
+  useQuery({
+    queryKey: 'HOME-KEY',
+    url: '/todos',
+  });
+  useQuery({
+    queryKey: 'HOME-KEY',
+    url: '/todos',
+  });
+
+  // Refetch a query
+
+  // useEffect(() => {
+  //   refetch()
+  // }, [])
+
+  if (loading || !data) return <span>loading...</span>;
+
+  return <h1>React Request</h1>;
+};
+
+export default App;
