@@ -36,13 +36,16 @@ The useQuery custom hook provided by React-Request allows you to manage API requ
 import useQuery from 'react-request';
 
 const MyComponent = () => {
-  const { data, isLoading, error, refetch } = useQuery();
+  const { data, loading, error, refetch } = useQuery<Data[]>({
+    url: '/todos',
+    queryKey: 'HOME-KEY',
+  });
 
   useEffect(() => {
-    refetch('https://api.example.com/data');
+    refetch();
   }, []);
 
-  if (isLoading) {
+  if (loading) {
     return <div>Loading...</div>;
   }
 
@@ -60,7 +63,7 @@ const MyComponent = () => {
 export default MyComponent;
 ```
 
-In this example, the useQuery hook manages the API request to https://api.example.com/data, handles loading state, errors, and caches the response data for future use.
+In this example, the useQuery hook manages the API request to https://jsonplaceholder.com/todos, handles loading state, errors, and caches the response data for future use.
 
 ### Features:
 
